@@ -37,7 +37,9 @@ const Board = () => {
           name={square.name}
           color={square.color}
           occupiedBy={square.occupiedBy}
-        />
+        >
+          {square.occupiedBy.length == 0 ? null : <Piece image={blackking} />}
+        </Square>
       ))}
     </div>
   );
