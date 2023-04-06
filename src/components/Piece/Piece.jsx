@@ -12,7 +12,7 @@ const Piece = ({
 }) => {
   return (
     <div>
-      <img src={image} alt="hello"></img>
+      <img className="w-10" src={image} alt=""></img>
     </div>
   );
 };
