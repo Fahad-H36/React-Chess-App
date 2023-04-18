@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Square from "../Square/Square";
 import Piece from "../Piece/Piece";
 import "./board.css";
@@ -12,19 +12,6 @@ import whiteking from "../../assets/pieces/white-king.svg";
 let temp = [];
 let initBoard = [];
 let boardState = {};
-// let possible_moves_table = {
-//   // value for the key king takes current square of the king and destination square
-//   // then returns true if king move is possible from current to destination square otherwise false
-//   king: (currentSquare, destinationSquare) =>
-//     [-1, 0, 1].includes(
-//       currentSquare[0].charCodeAt(0) - destinationSquare[0].charCodeAt(0)
-//     ) &&
-//     [-1, 0, 1].includes(currentSquare[1] - destinationSquare[1]) &&
-//     !(
-//       currentSquare[0].charCodeAt(0) - destinationSquare[0].charCodeAt(0) ==
-//         0 && currentSquare[1] - destinationSquare[1] == 0
-//     ),
-// };
 
 let possibleMovesFunctions = {
   king: (currentSquare) =>
@@ -50,17 +37,12 @@ let possibleMovesFunctions = {
         color: (i + j) % 2 == 0 ? "bg-gray-60" : "bg-white",
         occupiedBy: "",
       });
-      // if (`${String.fromCharCode(96 + j)}${i}`[1] == "2") {
-      //   boardState[`${String.fromCharCode(96 + j)}${i}`] = whitepawn;
-      // } else if (`${String.fromCharCode(96 + j)}${i}`[1] == "7") {
-      //   boardState[`${String.fromCharCode(96 + j)}${i}`] = blackpawn;
-      // } else {
-      //   boardState[`${String.fromCharCode(96 + j)}${i}`] = "";
-      // }
+
       boardState[`${String.fromCharCode(96 + j)}${i}`] = {
         name: "",
         imageUrl: "",
       };
+      boardState["e1"] = { name: "king-white", imageUrl: whiteking };
     }
   }
 
@@ -71,9 +53,31 @@ let possibleMovesFunctions = {
 }
 const Board = () => {
   const [board, setBoard] = useState(initBoard);
-  console.log(possibleMovesFunctions.king("e1"));
+  const [lookupTable, setLookupTable] = useState(boardState);
 
-  boardState["e1"] = { name: "king-white", imageUrl: whiteking };
+  useEffect(() => {
+    movePiece("e1", "e2");
+  }, []);
+  useEffect(() => {
+    console.log(lookupTable);
+  }, [lookupTable]);
+
+  const movePiece = (currentSquare, destinationSquare) => {
+    const piece = boardState[currentSquare].name.split("-")[0];
+
+    if (piece == "king") {
+      if (
+        possibleMovesFunctions.king(currentSquare).includes(destinationSquare)
+      ) {
+        setLookupTable({
+          ...lookupTable,
+          [destinationSquare]: lookupTable[currentSquare],
+          [currentSquare]: { name: "", imageUrl: "" },
+        });
+      }
+    }
+  };
+
   return (
     <div className="board">
       {board.map((square) => (
@@ -84,8 +88,11 @@ const Board = () => {
           color={square.color}
           occupiedBy={square.occupiedBy}
         >
-          {boardState[square.name].name.length == 0 ? null : (
-            <Piece image={boardState[square.name].imageUrl} />
+          {lookupTable[square.name].name.length == 0 ? null : (
+            <Piece
+              image={lookupTable[square.name].imageUrl}
+              location={square.name}
+            />
           )}
         </Square>
       ))}
