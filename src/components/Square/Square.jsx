@@ -1,8 +1,11 @@
-import React from "react";
+import { React, useState } from "react";
 
-const Square = ({ id, color, occupiedBy, name, children }) => {
+const Square = ({ onSquareClick, color, name, children }) => {
   return (
-    <div className={`${color} text-gray-600`}>
+    <div
+      onClick={() => onSquareClick(name)}
+      className={`${color} text-gray-600`}
+    >
       {name}
       {children}
     </div>

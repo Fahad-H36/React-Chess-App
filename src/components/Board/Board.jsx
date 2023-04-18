@@ -51,9 +51,13 @@ let possibleMovesFunctions = {
   }
   initBoard = [].concat(...initBoard);
 }
+
 const Board = () => {
   const [board, setBoard] = useState(initBoard);
   const [lookupTable, setLookupTable] = useState(boardState);
+  const [pieceMovementFlag, setPieceMovementFlag] = useState(false);
+  const [currentClickedSquareAndPiece, setCurrentClickedSquareAndPiece] =
+    useState({ square: "", piece: "" });
 
   useEffect(() => {
     console.log(board);
@@ -75,15 +79,33 @@ const Board = () => {
     }
   };
 
+  // const [flag, setFlag] = useState(flase);
+
+  const handleClick = (name) => {
+    let piece = lookupTable[name].name;
+
+    if (!pieceMovementFlag) {
+      if (piece.length == 0) {
+        return;
+      } else {
+        setCurrentClickedSquareAndPiece({ square: name, piece: piece });
+        piece = boardState[name].name.split("-")[0];
+
+        if (piece == "king") {
+          const possibleMoves = possibleMovesFunctions.king(name);
+          console.log(`Possible Moves are ${possibleMoves}`);
+        }
+      }
+    }
+  };
   return (
     <div className="board">
       {board.map((square) => (
         <Square
+          onSquareClick={handleClick}
           key={square.name}
-          id={square.id}
           name={square.name}
           color={square.color}
-          occupiedBy={square.occupiedBy}
         >
           {lookupTable[square.name].name.length == 0 ? null : (
             <Piece
