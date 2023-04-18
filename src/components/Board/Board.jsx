@@ -29,13 +29,13 @@ let possibleMovesFunctions = {
 };
 
 {
+  // Initializing the empty board and board State
   for (var i = 1; i <= 8; i++) {
     for (var j = 1; j <= 8; j++) {
       temp.push({
-        id: { i, j },
+        // id: { i, j },
         name: `${String.fromCharCode(96 + j)}${i}`,
         color: (i + j) % 2 == 0 ? "bg-gray-60" : "bg-white",
-        occupiedBy: "",
       });
 
       boardState[`${String.fromCharCode(96 + j)}${i}`] = {
@@ -56,11 +56,8 @@ const Board = () => {
   const [lookupTable, setLookupTable] = useState(boardState);
 
   useEffect(() => {
-    movePiece("e1", "e2");
-  }, []);
-  useEffect(() => {
-    console.log(lookupTable);
-  }, [lookupTable]);
+    console.log(board);
+  }, [board]);
 
   const movePiece = (currentSquare, destinationSquare) => {
     const piece = boardState[currentSquare].name.split("-")[0];
