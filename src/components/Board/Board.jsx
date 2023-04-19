@@ -8,6 +8,7 @@ import blackking from "../../assets/pieces/black-king.svg";
 import blackpawn from "../../assets/pieces/black-pawn.svg";
 import whitepawn from "../../assets/pieces/white-pawn.svg";
 import whiteking from "../../assets/pieces/white-king.svg";
+import dot from "../../assets/misc/grey-dot.png";
 
 let temp = [];
 let initBoard = [];
@@ -42,7 +43,7 @@ let possibleMovesFunctions = {
         name: "",
         imageUrl: "",
       };
-      boardState["e1"] = { name: "king-white", imageUrl: whiteking };
+      boardState["e2"] = { name: "king-white", imageUrl: whiteking };
     }
   }
 
@@ -57,14 +58,15 @@ const Board = () => {
   const [lookupTable, setLookupTable] = useState(boardState);
   const [pieceMovementFlag, setPieceMovementFlag] = useState(false);
   const [currentClickedSquareAndPiece, setCurrentClickedSquareAndPiece] =
-    useState({ square: "", piece: "" });
+    useState({ square: "", piece: "", moves: [] });
 
   useEffect(() => {
-    console.log(board);
-  }, [board]);
+    console.log(pieceMovementFlag, currentClickedSquareAndPiece);
+  }, [pieceMovementFlag, currentClickedSquareAndPiece]);
 
   const movePiece = (currentSquare, destinationSquare) => {
-    const piece = boardState[currentSquare].name.split("-")[0];
+    // console.log(currentSquare);
+    const piece = lookupTable[currentSquare].name.split("-")[0];
 
     if (piece == "king") {
       if (
@@ -88,14 +90,30 @@ const Board = () => {
       if (piece.length == 0) {
         return;
       } else {
-        setCurrentClickedSquareAndPiece({ square: name, piece: piece });
-        piece = boardState[name].name.split("-")[0];
+        piece = piece.split("-")[0];
 
         if (piece == "king") {
           const possibleMoves = possibleMovesFunctions.king(name);
-          console.log(`Possible Moves are ${possibleMoves}`);
+          setCurrentClickedSquareAndPiece(() => ({
+            square: name,
+            piece: piece,
+            moves: possibleMoves,
+          }));
+          // console.log(
+          //   `Possible Moves are ${currentClickedSquareAndPiece.moves}`
+          // );
+        }
+        setPieceMovementFlag(true);
+      }
+    } else if (pieceMovementFlag) {
+      if (piece.length == 0) {
+        if (currentClickedSquareAndPiece.moves.includes(name)) {
+          // console.log(currentClickedSquareAndPiece.square);
+          movePiece(currentClickedSquareAndPiece.square, name);
         }
       }
+      setCurrentClickedSquareAndPiece({ square: "", piece: "", moves: [] });
+      setPieceMovementFlag(false);
     }
   };
   return (
