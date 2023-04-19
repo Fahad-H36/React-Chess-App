@@ -131,6 +131,9 @@ const Board = () => {
               location={square.name}
             />
           )}
+          {currentClickedSquareAndPiece.moves.includes(square.name) && (
+            <img src={dot} />
+          )}
         </Square>
       ))}
     </div>
