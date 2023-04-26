@@ -10,9 +10,7 @@ import whitepawn from "../../assets/pieces/white-pawn.svg";
 import whiteking from "../../assets/pieces/white-king.svg";
 import dot from "../../assets/misc/grey-dot.png";
 
-let temp = [];
-let initBoard = [];
-let boardState = {};
+import initializeBoard from "../../services/initBoard";
 
 let possibleMovesFunctions = {
   king: (currentSquare) =>
@@ -29,29 +27,8 @@ let possibleMovesFunctions = {
     ),
 };
 
-{
-  // Initializing the empty board and board State
-  for (var i = 1; i <= 8; i++) {
-    for (var j = 1; j <= 8; j++) {
-      temp.push({
-        // id: { i, j },
-        name: `${String.fromCharCode(96 + j)}${i}`,
-        color: (i + j) % 2 == 0 ? "bg-gray-60" : "bg-white",
-      });
-
-      boardState[`${String.fromCharCode(96 + j)}${i}`] = {
-        name: "",
-        imageUrl: "",
-      };
-      boardState["e2"] = { name: "king-white", imageUrl: whiteking };
-    }
-  }
-
-  for (var i = 63; i >= 0; i -= 8) {
-    initBoard.push(temp.slice(i - 7, i + 1));
-  }
-  initBoard = [].concat(...initBoard);
-}
+const { initBoard, boardState } = initializeBoard();
+boardState["e2"] = { name: "king-white", imageUrl: whiteking };
 
 const Board = () => {
   const [board, setBoard] = useState(initBoard);
